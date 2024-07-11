@@ -1,3 +1,9 @@
+# csv file
+*.csv
+
+# contents of data folder
+data/
+
 # file with api keys
 SECRETS.py
 
