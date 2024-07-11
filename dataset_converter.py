@@ -1,12 +1,20 @@
+import os
 import re
 from  openai import OpenAI
 import SECRETS
 from convert_training_csv import convert_training_csv
 
-
-# Read the text file
-with open('./data/notes1.txt', 'r') as file:
-    data = file.read()
+data = ""
+directory = os.fsencode('./data')
+    
+for filee in os.listdir(directory):
+    filename = os.fsdecode(filee)
+    if filename.endswith(".txt") or filename.endswith(".py"): 
+        # Read the text file
+        with open(f'./data/{filename}', 'r') as file:
+            data += file.read()
+    else:
+        continue
 
 # Extract sentences after asterisks
 pattern = r'^\* (.+)$'
@@ -52,20 +60,19 @@ result = response.choices[0].message.content
 regexp2 = r'"([^"]+)"'      # matches everything inside double quotes
 regexopt2 = re.MULTILINE
 
-matchesss = re.findall(regexp2, result, regexopt2)        # finds all regex matches
+output_matches = re.findall(regexp2, result, regexopt2)        # finds all regex matches
 
-print("matches:", matchesss)
+print("matches:", output_matches)
 
-"""
+
 new_arr = []
 
-for match in matches:
-    for match2 in matchesss:
-        new_arr.append(match)
-        new_arr.append(match2)
+# we iterate through the matches and line up the "Prompt" with the generated "user_input"
+for i in range(len(output_matches)):
+    new_arr.append(matches[i])
+    new_arr.append(output_matches[i])
 
 print('new_arr:', new_arr)
 
 # convert the chatgpt array into a trainable csv
 convert_training_csv(new_arr)
-"""
